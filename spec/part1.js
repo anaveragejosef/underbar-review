@@ -58,7 +58,7 @@
       });
 
       it('should accept an index argument', function() {
-        expect(_.last([1, 2, 3], 2)).to.eql(3);
+        expect(_.last([1, 2, 3], 2)).to.eql([2, 3]);
       });
 
       it('should return empty array if zero is passed in as the index', function() {
@@ -236,7 +236,7 @@
 
       it('returns the first index that the target can be found at when there are multiple matches', function() {
         var numbers = [1, 2, 3, 2];
-        expect(_.indexOf(numbers), 2).to.equal(1);
+        expect(_.indexOf(numbers, 2)).to.equal(1);
       });
     });
 
