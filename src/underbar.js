@@ -197,12 +197,28 @@
   // Determine whether all of the elements match a truth test.
   _.every = function(collection, iterator) {
     // TIP: Try re-using reduce() here.
+    iterator = iterator || _.identity;
+    return _.reduce(collection, function(doesPass, ele) {
+      if (!iterator(ele)) {
+        doesPass = false;
+        return doesPass;
+      }
+      return doesPass;
+    }, true);
   };
 
   // Determine whether any of the elements pass a truth test. If no iterator is
   // provided, provide a default one
   _.some = function(collection, iterator) {
     // TIP: There's a very clever way to re-use every() here.
+    iterator = iterator || _.identity;
+    return _.reduce(collection, function(doesPass, ele) {
+      if (iterator(ele)) {
+        return true;
+      } else {
+        return doesPass;
+      }
+    }, false);
   };
 
 
@@ -225,11 +241,25 @@
   //     bla: "even more stuff"
   //   }); // obj1 now contains key1, key2, key3 and bla
   _.extend = function(obj) {
+    _.each(arguments, function(eachArg) {
+      for (var key in eachArg) {
+        obj[key] = eachArg[key];
+      }
+    });
+    return obj;
   };
 
   // Like extend, but doesn't ever overwrite a key that already
   // exists in obj
   _.defaults = function(obj) {
+    _.each(arguments, function(eachArg) {
+      for (var key in eachArg) {
+        if (obj[key] === undefined) {
+          obj[key] = eachArg[key];
+        }
+      }
+    });
+    return obj;
   };
 
 
@@ -273,6 +303,16 @@
   // already computed the result for the given argument and return that value
   // instead if possible.
   _.memoize = function(func) {
+    var cache = {};
+    return function() {
+      var arg = arguments;
+      var argArray = Array.prototype.slice.call(arg);
+      var key = JSON.stringify(argArray);
+      if (cache[key] === undefined) {
+        cache[key] = func.apply(null, argArray);
+      }
+    };
+    return cache[key];
   };
 
   // Delays a function for the given number of milliseconds, and then calls
