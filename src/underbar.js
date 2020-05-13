@@ -308,11 +308,13 @@
       var arg = arguments;
       var argArray = Array.prototype.slice.call(arg);
       var key = JSON.stringify(argArray);
-      if (cache[key] === undefined) {
+      if (key in cache) {
+        return cache[key];
+      } else {
         cache[key] = func.apply(null, argArray);
+        return cache[key];
       }
     };
-    return cache[key];
   };
 
   // Delays a function for the given number of milliseconds, and then calls
@@ -322,6 +324,20 @@
   // parameter. For example _.delay(someFunction, 500, 'a', 'b') will
   // call someFunction('a', 'b') after 500ms
   _.delay = function(func, wait) {
+    var additionalArguments = false;
+    if (arguments.length > 2) {
+      var args = Array.prototype.slice.call(arguments);
+      var args2 = args.slice(2);
+      additionalArguments = true;
+    }
+
+    return setTimeout(function() {
+      if (additionalArguments) {
+        return func.apply(null, args2);
+      } else {
+        return func.apply(null, arguments);
+      }
+    }, wait);
   };
 
 
@@ -336,6 +352,15 @@
   // input array. For a tip on how to make a copy of an array, see:
   // http://mdn.io/Array.prototype.slice
   _.shuffle = function(array) {
+    var shuffledArray = array.slice();
+    for (let i = 0; i < shuffledArray.length; i++) {
+      let randomIdx = Math.floor(Math.random() * (shuffledArray.length - 1));
+      let randomVal = shuffledArray[randomIdx];
+      let currVal = shuffledArray[i];
+      shuffledArray.splice(i, 1, randomVal);
+      shuffledArray.splice(randomIdx, 1, currVal);
+    }
+    return shuffledArray;
   };
 
 
